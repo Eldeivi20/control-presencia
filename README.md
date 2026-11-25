@@ -41,6 +41,30 @@ El sistema soporta como mínimo tres familias de horario:
 | `presence-query-app` | Frontend de consulta de presencia e incidencias |
 | `schedule-admin-app` | Frontend de definición y asignación de horarios |
 
+## Modelo de dominio
+
+El dominio vive en `presence-backend`, en el paquete `software.ulpgc.presence.domain`, y no depende de ninguna librería externa.
+
+| Concepto | Clase | Descripción |
+|---|---|---|
+| Persona | `Employee`, `EmployeeId` | Persona de prueba identificada por un código, con un nombre visible y su centro de trabajo |
+| Tramo horario | `TimeSlot` | Hora de inicio y duración. Permite tramos que cruzan la medianoche y guardias de 24 horas |
+| Intervalo concreto | `TimeInterval` | Tramo situado en una fecha. Calcula duración, pertenencia y solapamiento con otro intervalo |
+| Periodo | `DateRange` | Rango de fechas con ambos extremos incluidos |
+| Asignación | `ScheduleAssignment` | Horario (`ScheduleId`) asignado a una persona durante un periodo |
+| Fichaje | `ClockEvent` | Entrada o salida (`ClockEventType`) con fecha, hora, persona y origen (`ClockEventOrigin`) |
+| Incidencia | `Incident`, `IncidentType` | Retraso, salida temprana, ausencia, salida pendiente o trabajo fuera de horario, con su desviación |
+
+Las reglas de validación se aplican en el propio constructor de cada objeto, de modo que un objeto de dominio nunca existe en un estado inválido. Los errores se expresan con excepciones que heredan de `DomainException`:
+
+| Excepción | Cuándo se produce |
+|---|---|
+| `MissingRequiredValueException` | Falta un dato obligatorio o está en blanco |
+| `InvalidTimeSlotException` | El tramo dura cero horas o más de 24 horas |
+| `InvalidTimeIntervalException` | El intervalo no empieza antes de terminar |
+| `InvalidDateRangeException` | El periodo termina antes de empezar |
+| `NegativeDeviationException` | La desviación de una incidencia es negativa |
+
 ## Cómo compilar
 
 ```
