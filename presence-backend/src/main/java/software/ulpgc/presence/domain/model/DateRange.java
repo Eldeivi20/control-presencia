@@ -22,6 +22,10 @@ public record DateRange(LocalDate start, LocalDate end) {
         return !date.isBefore(start) && !date.isAfter(end);
     }
 
+    public boolean overlaps(DateRange other) {
+        return !other.end.isBefore(start) && !other.start.isAfter(end);
+    }
+
     public Stream<LocalDate> days() {
         return start.datesUntil(end.plusDays(1));
     }
